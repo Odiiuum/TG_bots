@@ -2,3 +2,4 @@ txt
 config.py
 *.db
 __pycache__
+.env
