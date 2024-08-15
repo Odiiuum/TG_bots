@@ -5,3 +5,4 @@ __pycache__
 .env
 venv
 init_questions.py
+database
