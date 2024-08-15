@@ -9,7 +9,6 @@ from database import db
 from handlers.functions import *
 
 router = Router()
-
 database = db.Database()
 user = User()
 
@@ -24,19 +23,11 @@ async def cmd_start(message: Message):
     user = User(user_id, user_name, user_firstname, user_lastname)
     database.add_user(user)
     
-    greet_text = greet_user(user)
+    greet_text, state = greet_user(user)
             
     await message.answer(greet_text, reply_markup=get_start_kb())
     
 @router.message(Command("help"))
 async def cmd_help(message: Message):
     await message.answer("HELP")
-    
-# @router.message(Command("theory"))
-# async def cmd_theory(message: Message):
-#     message.answer("Перед початком проходження введіть своє повне імя")
 
-@router.message(Command("admin"))
-async def cmd_admin(message: Message):
-    await message.answer(f"Привіт, {greet_user}. Для проходження тесту оберіть один з потрібних. Для відкриття допомоги, введіть: /help .", reply_markup=get_start_kb())
-    

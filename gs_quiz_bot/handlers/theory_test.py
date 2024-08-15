@@ -9,5 +9,10 @@ from database import db
 from handlers.functions import *
 
 router = Router()
+database = db.Database()
 
-# @router.message(F.lower.text == "")
+
+
+@router.message(F.text.lower() == "теорія")
+async def start_test_theory(message: Message):
+    print(database.get_questions("questions_theory"))
