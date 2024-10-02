@@ -25,15 +25,9 @@ class UserStates(StatesGroup):
     user_view_results = State()     
     
 class UserTestStates(StatesGroup):
-     test_start = State()
-     test_question = State()
+    test_start = State()
+    test_question = State()
 
-# class QuizStates(StatesGroup):
-#     quiz_start = State()              
-#     quiz_question = State()           
-#     quiz_review_answers = State()      
-#     quiz_complete = State()           
-    
     
 def greet_user(user):
     database = db.Database()
@@ -58,7 +52,6 @@ def greet_user(user):
     else:
         greet_text += " Для проходження тесту оберіть один з потрібних. Для відкриття допомоги, введіть: /help"
         state = "state_user_menu"
-        
 
     return greet_text, state
         
