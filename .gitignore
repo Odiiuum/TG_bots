@@ -6,3 +6,4 @@ __pycache__
 venv
 init_questions.py
 database
+*.log
