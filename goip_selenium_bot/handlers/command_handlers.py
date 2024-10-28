@@ -9,6 +9,7 @@ from keyboards.user_start_kb import *
 from keyboards.admin_kb import *
 from database import db
 from handlers.functions import *
+from utils.logger import log_user_action
 
 from assets.classes import *
 
@@ -17,6 +18,8 @@ database = db.Database()
 
 @router.message(Command("start"))
 async def cmd_start(message: Message, state: FSMContext):
+    
+    log_user_action(message, "Run \'/start\' command.")
     
     user_name = message.from_user.username
     user_firstname = message.from_user.first_name
@@ -42,23 +45,28 @@ async def cmd_start(message: Message, state: FSMContext):
     
 @router.message(Command("get_numbers"),  StateFilter(*[value for key, value in UserStates.__dict__.items() if isinstance(value, State)]))
 async def cmd_get_numbers(message: Message, state: FSMContext):
+    log_user_action(message, "Run \'/get_numbers\' command, but user does not have admin permissions to run this command.")
     await message.answer("У вас недостатньо прав для виконання цієї команди")    
     
 @router.message(Command("get_numbers"), StateFilter(*[value for key, value in AdminStates.__dict__.items() if isinstance(value, State)]))
 async def cmd_get_numbers_admin(message: Message, state: FSMContext):
     if RunAllState.runningUSSDScript:
+        log_user_action(message, "Run \'/get_numbers\' command, but command was already running.")
+
         await message.answer("Задача вже виконується. Очікуйте її завершення.")
     else:
+        log_user_action(message, "Run \'/get_numbers\' command.")
         await message.answer("Зробити запит без USSD?", reply_markup=get_inline_only_collect_keyboard())
-        print("OK")
         await state.set_state(AdminStates.confirm_ussd)
         
 @router.callback_query(F.data.in_({"yes_only", "no_only"}), AdminStates.confirm_ussd)
 async def callback_confirm_action_only_collect_ussd(callback_query: CallbackQuery, state: FSMContext):
         if callback_query.data == "yes_only":
-            await state.update_data(only_collect=True)
+            log_user_action(callback_query.message, "Run \'/get_numbers\' command, only request.")
+            # await state.update_data(only_collect=True)
         else:
-            await state.update_data(only_collect=False)
+            log_user_action(callback_query.message, "Run \'/get_numbers\' command, make a request for all numbers again.")
+            # await state.update_data(only_collect=False)
         await callback_query.answer()
         await callback_query.message.answer("Ви впевнені, що хочете продовжити?", reply_markup=get_inline_confirm_kb())
     
