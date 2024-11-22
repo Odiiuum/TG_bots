@@ -1,0 +1,9 @@
+services:
+  goip_app:
+    container_name: goip_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    restart: always
