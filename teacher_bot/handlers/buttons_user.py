@@ -19,13 +19,13 @@ from utils.logger import log_user_action
 router = Router()
 database = db.Database()
 
-@router.message(F.text.lower() == "правила та компліменти") # , StateFilter(UserStates.main_menu)
+@router.message(F.text.lower() == "правила та компліменти") 
 async def rules_and_compliments_button(message: Message, state: FSMContext):
     log_user_action(message, "Click for button 'Правила та компліменти'.")
     await message.answer("Виберіть, що вас цікавить.", reply_markup=rules_and_compliments_menu())
     
 
-@router.message(F.text.lower() == "правила") # , StateFilter(UserStates.main_menu)
+@router.message(F.text.lower() == "правила") 
 async def rules_button(message: Message, state: FSMContext):
     log_user_action(message, "Click for button 'Правила'.")
     await message.answer(rules, reply_markup=rules_inline_menu(), parse_mode="HTML")
@@ -52,7 +52,20 @@ async def change_confirmed_rules(callback_query: CallbackQuery, state: FSMContex
     )
 
     
-@router.message(F.text.lower() == "компліменти") # , StateFilter(UserStates.main_menu)
+@router.message(F.text.lower() == "компліменти") 
 async def compliments_button(message: Message, state: FSMContext):
-    await message.answer("Компліменти!!!!!!!!!")
+    log_user_action(message, "Click for button 'Компліменти'.")
+    await message.answer("Виберіть вашу цільову аудиторію.", reply_markup=compliments_menu())
+    
+    
+    
+@router.message(F.text.lower() == "жца") 
+async def compliments_female_button(message: Message, state: FSMContext):
+    log_user_action(message, "Click for button 'Компліменти ЖЦА'.")
+    await message.answer("Виберіть тематику компліменту.", reply_markup=compliments_female_menu())
+    
+    
+@router.callback_query(F.data.startswith("compliments_female_"))
+async def change_confirmed_rules(callback_query: CallbackQuery, state: FSMContext):
+    
     
