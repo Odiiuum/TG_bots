@@ -13,21 +13,27 @@ from handlers.functions import *
 from assets.text_rules import rules 
 from assets.classes import *
 
+from utils.logger import log_user_action
+
+
 router = Router()
 database = db.Database()
 
 @router.message(F.text.lower() == "правила та компліменти") # , StateFilter(UserStates.main_menu)
 async def rules_and_compliments_button(message: Message, state: FSMContext):
+    log_user_action(message, "Click for button 'Правила та компліменти'.")
     await message.answer("Виберіть, що вас цікавить.", reply_markup=rules_and_compliments_menu())
     
 
 @router.message(F.text.lower() == "правила") # , StateFilter(UserStates.main_menu)
 async def rules_button(message: Message, state: FSMContext):
+    log_user_action(message, "Click for button 'Правила'.")
     await message.answer(rules, reply_markup=rules_inline_menu(), parse_mode="HTML")
     
     
 @router.callback_query(F.data.in_({"confirmed_rules"}))
 async def change_confirmed_rules(callback_query: CallbackQuery, state: FSMContext):
+    
     current_markup = callback_query.message.reply_markup
     current_button = current_markup.inline_keyboard[0][0]
     is_confirmed = current_button.text.startswith("✅")
@@ -36,6 +42,10 @@ async def change_confirmed_rules(callback_query: CallbackQuery, state: FSMContex
     
     user_id = callback_query.from_user.id
     database.update_user_confirmed_rules(user_id, not is_confirmed)
+    
+    action = "Confirmed rules." if not is_confirmed else "Uncorfirmed rules."
+    
+    log_user_action(callback_query, action)
     
     await callback_query.answer(
         "Ви ознайомились с правилами!" if not is_confirmed else "Вы відмінили підтверждення!"
