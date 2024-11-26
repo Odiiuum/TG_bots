@@ -8,7 +8,7 @@ from aiogram.fsm.state import State, StatesGroup
 from keyboards.user_start_kb import *
 from keyboards.admin_kb import *
 from database import db
-from handlers.functions import *
+from utils.functions import *
 from utils.logger import log_user_action
 
 from assets.classes import *

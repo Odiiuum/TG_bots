@@ -8,13 +8,12 @@ from aiogram.fsm.state import State, StatesGroup
 from keyboards.user_start_kb import *
 from keyboards.admin_kb import *
 from database import db
-from handlers.functions import *
+from utils.functions import *
 
 from assets.text_rules import rules 
 from assets.classes import *
 
 from utils.logger import log_user_action
-
 
 router = Router()
 database = db.Database()
@@ -54,18 +53,14 @@ async def change_confirmed_rules(callback_query: CallbackQuery, state: FSMContex
     
 @router.message(F.text.lower() == "компліменти") 
 async def compliments_button(message: Message, state: FSMContext):
-    log_user_action(message, "Click for button 'Компліменти'.")
+    log_user_action(message, "Click for reply button 'Компліменти'.")
     await message.answer("Виберіть вашу цільову аудиторію.", reply_markup=compliments_menu())
     
     
     
 @router.message(F.text.lower() == "жца") 
 async def compliments_female_button(message: Message, state: FSMContext):
-    log_user_action(message, "Click for button 'Компліменти ЖЦА'.")
-    await message.answer("Виберіть тематику компліменту.", reply_markup=compliments_female_menu())
-    
-    
-@router.callback_query(F.data.startswith("compliments_female_"))
-async def change_confirmed_rules(callback_query: CallbackQuery, state: FSMContext):
+    log_user_action(message, "Click for reply button 'Компліменти ЖЦА'.")
+    await message.answer("Виберіть тематику компліменту.", reply_markup=compliments_female_inline_menu())
     
     

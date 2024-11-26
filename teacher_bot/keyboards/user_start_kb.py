@@ -40,15 +40,15 @@ def compliments_menu() -> ReplyKeyboardMarkup:
     return kb.as_markup(resize_keyboard=True)
 
 
-def compliments_female_menu() -> InlineKeyboardMarkup:
-    female_compliments_tenderness = InlineKeyboardButton(text="Ніжність", callback_data="compliments_female_tenderness")
-    female_compliments_only_you = InlineKeyboardButton(text="Саме ти", callback_data="compliments_female_only_you")
-    female_compliments_delight = InlineKeyboardButton(text="Захоплення", callback_data="compliments_female_delight")
-    female_compliments_influence = InlineKeyboardButton(text="Її вплив на тебе", callback_data="compliments_female_influence")
-    female_compliments_funny = InlineKeyboardButton(text="Жартівливі", callback_data="compliments_female_funny")
-    female_compliments_appearance = InlineKeyboardButton(text="Зовнішність фото/відео", callback_data="compliments_female_appearance")
-    female_compliments_character = InlineKeyboardButton(text="Характер", callback_data="compliments_female_character")
-    female_compliments_sex = InlineKeyboardButton(text="Сексуальність", callback_data="compliments_female_sex")
+def compliments_female_inline_menu() -> InlineKeyboardMarkup:
+    female_compliments_tenderness = InlineKeyboardButton(text="Ніжність", callback_data="compliments_female-tenderness")
+    female_compliments_only_you = InlineKeyboardButton(text="Саме ти", callback_data="compliments_female-only_you")
+    female_compliments_delight = InlineKeyboardButton(text="Захоплення", callback_data="compliments_female-delight")
+    female_compliments_influence = InlineKeyboardButton(text="Її вплив на тебе", callback_data="compliments_female-influence")
+    female_compliments_funny = InlineKeyboardButton(text="Жартівливі", callback_data="compliments_female-funny")
+    female_compliments_appearance = InlineKeyboardButton(text="Зовнішність фото/відео", callback_data="compliments_female-appearance")
+    female_compliments_character = InlineKeyboardButton(text="Характер", callback_data="compliments_female-character")
+    female_compliments_sex = InlineKeyboardButton(text="Сексуальність", callback_data="compliments_female-sex")
     
     keyboard = InlineKeyboardMarkup(inline_keyboard=[[
         female_compliments_tenderness,
@@ -69,7 +69,21 @@ def compliments_female_menu() -> InlineKeyboardMarkup:
     
     return keyboard
 
+
+def compliments_female_inline_sub_menu() -> InlineKeyboardMarkup:
+    next_button = InlineKeyboardButton(text="Наступний", callback_data="compliments_female-submenu_next")
+    previous_button = InlineKeyboardButton(text="Попередній", callback_data="compliments_female-submenu_previous")
+    back_button = InlineKeyboardButton(text="Повернутися в меню", callback_data="compliments_female-submenu_back")
     
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[[
+        previous_button,
+        next_button
+    ],
+    [
+        back_button
+    ]])
+    
+    return keyboard
     
     
 def rules_inline_menu(confirmed: bool = False) -> InlineKeyboardMarkup:
