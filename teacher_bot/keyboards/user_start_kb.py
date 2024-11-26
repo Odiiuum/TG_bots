@@ -22,6 +22,7 @@ def instrument_inline_menu() -> InlineKeyboardMarkup:
     
     return keyboard
 
+
 def rules_and_compliments_menu() -> ReplyKeyboardMarkup:
     kb = ReplyKeyboardBuilder()
     kb.button(text="Правила")
@@ -95,3 +96,32 @@ def rules_inline_menu(confirmed: bool = False) -> InlineKeyboardMarkup:
     )
     return markup
 
+
+def compliments_male_inline_menu() -> InlineKeyboardMarkup:
+    male_compliments_appearance = InlineKeyboardButton(text="Зовнішність фото/відео", callback_data="compliments_male-appearance")
+    male_compliments_only_you = InlineKeyboardButton(text="Саме ти", callback_data="compliments_male-only_you")
+    male_compliments_character = InlineKeyboardButton(text="Характер", callback_data="compliments_male-character")
+    male_compliments_sex = InlineKeyboardButton(text="Сексуальність", callback_data="compliments_male-sex")
+    male_compliments_funny = InlineKeyboardButton(text="Жартівливі", callback_data="compliments_male-funny")
+    
+    male_compliments_methodology = InlineKeyboardButton(text="Методології комунікації", callback_data="compliments_male-methodology")
+    male_compliments_anchor = InlineKeyboardButton(text="", callback_data="compliments_male-anchor")
+    
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[[
+        male_compliments_only_you,
+        male_compliments_sex     
+    ],
+    [
+        male_compliments_funny,
+        male_compliments_appearance,
+    ],
+    [
+        male_compliments_character
+    ],
+    [
+        male_compliments_methodology,
+        male_compliments_anchor
+    ]
+    ])
+    
+    return keyboard

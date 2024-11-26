@@ -5,7 +5,9 @@ __pycache__
 .env
 venv
 init_questions.py
-database
+goip_selenium_bot/database
 *.log
 
 text_*.py
+
+img
