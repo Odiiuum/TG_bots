@@ -27,28 +27,33 @@ async def rules_and_compliments_button(message: Message, state: FSMContext):
 @router.message(F.text.lower() == "правила") 
 async def rules_button(message: Message, state: FSMContext):
     log_user_action(message, "Click for button 'Правила'.")
-    await message.answer(rules, reply_markup=rules_inline_menu(), parse_mode="HTML")
+    user_id = message.from_user.id
+    is_confirmed = database.get_user_confirmed_rules(user_id)
+    await message.answer(rules, reply_markup=rules_inline_menu(is_confirmed), parse_mode="HTML")
     
     
 @router.callback_query(F.data.in_({"confirmed_rules"}))
 async def change_confirmed_rules(callback_query: CallbackQuery, state: FSMContext):
-    
-    current_markup = callback_query.message.reply_markup
-    current_button = current_markup.inline_keyboard[0][0]
-    is_confirmed = current_button.text.startswith("✅")
-    new_markup = rules_inline_menu(confirmed=not is_confirmed)
-    await callback_query.message.edit_reply_markup(reply_markup=new_markup)
-    
     user_id = callback_query.from_user.id
-    database.update_user_confirmed_rules(user_id, not is_confirmed)
+    is_confirmed = database.get_user_confirmed_rules(user_id)
     
-    action = "Confirmed rules." if not is_confirmed else "Uncorfirmed rules."
+    if is_confirmed == "True":
+        new_status = "False"
+        action = "Unconfirmed rules."
+        callback_answer = "Вы відмінили підтверждення!"
+    elif is_confirmed == "False":
+        new_status = "True"
+        action = "Confirmed rules."
+        callback_answer = "Ви ознайомились с правилами"
+        
+    database.update_user_confirmed_rules(user_id, new_status)  
+    
+    new_markup = rules_inline_menu(confirmed=new_status)
+    await callback_query.message.edit_reply_markup(reply_markup=new_markup)
     
     log_user_action(callback_query, action)
     
-    await callback_query.answer(
-        "Ви ознайомились с правилами!" if not is_confirmed else "Вы відмінили підтверждення!"
-    )
+    await callback_query.answer(callback_answer)
 
     
 @router.message(F.text.lower() == "компліменти") 

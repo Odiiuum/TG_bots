@@ -10,23 +10,27 @@ class Database:
 
     def create_init_db(self):
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(
-                       id INTEGER PRIMARY KEY AUTOINCREMENT,
-                       user_id INTEGER UNIQUE,
-                       username TEXT,
-                       firstname TEXT,
-                       lastname TEXT,
-                       created_at TEXT,
-                       confirmed_rules
-                       )""")
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        user_id INTEGER UNIQUE,
+                        username TEXT,
+                        firstname TEXT,
+                        lastname TEXT,
+                        created_at TEXT,
+                        confirmed_rules TEXT
+                        )""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS admin_users(
-                       id INTEGER PRIMARY KEY AUTOINCREMENT,
-                       user_id INTEGER,
-                       username TEXT,
-                       firstname TEXT,
-                       lastname TEXT,
-                       created_at TEXT
-                       )""")
-        
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        user_id INTEGER,
+                        username TEXT,
+                        firstname TEXT,
+                        lastname TEXT,
+                        created_at TEXT
+                        )""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS compliments_female(
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        subject TEXT,
+                        text TEXT
+                        )""")
         
         user_id = config.admin_uid
         username = config.admin_username
@@ -57,12 +61,12 @@ class Database:
         if count == 0:
             created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  
             self.cursor.execute(
-                "INSERT INTO users (user_id, username, firstname, lastname, created_at) VALUES (?, ?, ?, ?, ?)",
-                (user.user_id, user.username, user.firstname, user.lastname, created_at)
+                "INSERT INTO users (user_id, username, firstname, lastname, created_at, confirmed_rules) VALUES (?, ?, ?, ?, ?, ?)",
+                (user.user_id, user.username, user.firstname, user.lastname, created_at, False)
             )
             self.con.commit() 
             
-    def update_user_confirmed_rules(self, user_id, confirmed: bool = False):
+    def update_user_confirmed_rules(self, user_id, confirmed):
         self.cursor.execute("""
                 UPDATE users
                 SET confirmed_rules = ?
@@ -71,9 +75,16 @@ class Database:
         
         self.con.commit() 
         
-
+    def get_user_confirmed_rules(self, user_id: int):
+        self.cursor.execute("SELECT confirmed_rules FROM users WHERE user_id = ?", (user_id,))
+        result = self.cursor.fetchone()[0]
         
+        return result
         
+    def get_compliments_female(self):
+        self.cursor.execute("SELECT * FROM compliments_female")
+        count = self.cursor.fetchall()
+        return count
           
 
         

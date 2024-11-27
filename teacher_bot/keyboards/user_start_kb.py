@@ -87,8 +87,14 @@ def compliments_female_inline_sub_menu() -> InlineKeyboardMarkup:
     return keyboard
     
     
-def rules_inline_menu(confirmed: bool = False) -> InlineKeyboardMarkup:
-    button_text = "✅ Ознайомлений(-а)" if confirmed else "Ознайомлен(-а)"
+def rules_inline_menu(confirmed) -> InlineKeyboardMarkup:
+    button_text = None
+    
+    if confirmed == "True":
+        button_text = "✅ Ознайомлений(-а)"
+    elif confirmed == "False":
+        button_text = "Ознайомлений(-а)"
+    
     markup = InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text=button_text, callback_data="confirmed_rules")]
