@@ -24,12 +24,33 @@ async def rules_and_compliments_button(message: Message, state: FSMContext):
     await message.answer("Виберіть, що вас цікавить.", reply_markup=rules_and_compliments_menu())
     
 
+@router.message(F.text.lower() == "правила та компліменти") 
+async def rules_and_compliments_button(message: Message, state: FSMContext):
+    log_user_action(message, "Click for button 'Правила та компліменти'.")
+    await message.answer("Виберіть, що вас цікавить.", reply_markup=rules_and_compliments_menu())
+    
+
 @router.message(F.text.lower() == "правила") 
 async def rules_button(message: Message, state: FSMContext):
     log_user_action(message, "Click for button 'Правила'.")
+    data = await state.get_data()
+    previous_message_id = data.get("rules_message_id")
+    if previous_message_id:
+        try:
+            await message.bot.delete_message(chat_id=message.chat.id, message_id=previous_message_id)
+        except Exception as e:
+            print(f"Error delete message: {e}")
+
     user_id = message.from_user.id
     is_confirmed = database.get_user_confirmed_rules(user_id)
-    await message.answer(rules, reply_markup=rules_inline_menu(is_confirmed), parse_mode="HTML")
+
+    sent_message = await message.answer(
+        rules,
+        reply_markup=rules_inline_menu(is_confirmed),
+        parse_mode="HTML"
+    )
+    
+    await state.update_data(rules_message_id=sent_message.message_id)
     
     
 @router.callback_query(F.data.in_({"confirmed_rules"}))

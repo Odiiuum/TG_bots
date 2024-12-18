@@ -16,7 +16,8 @@ class Database:
                         firstname TEXT,
                         lastname TEXT,
                         created_at TEXT,
-                        confirmed_rules TEXT
+                        confirmed_rules TEXT,
+                        current_state TEXT
                         )""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS admin_users(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,7 +27,16 @@ class Database:
                         lastname TEXT,
                         created_at TEXT
                         )""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS rules(
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        text TEXT
+                        )""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS compliments_female(
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        subject TEXT,
+                        text TEXT
+                        )""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS compliments_male(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         subject TEXT,
                         text TEXT
@@ -61,8 +71,8 @@ class Database:
         if count == 0:
             created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  
             self.cursor.execute(
-                "INSERT INTO users (user_id, username, firstname, lastname, created_at, confirmed_rules) VALUES (?, ?, ?, ?, ?, ?)",
-                (user.user_id, user.username, user.firstname, user.lastname, created_at, False)
+                "INSERT INTO users (user_id, username, firstname, lastname, created_at, confirmed_rules, current_state) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (user.user_id, user.username, user.firstname, user.lastname, created_at, "False", "main_menu")
             )
             self.con.commit() 
             
@@ -78,7 +88,11 @@ class Database:
     def get_user_confirmed_rules(self, user_id: int):
         self.cursor.execute("SELECT confirmed_rules FROM users WHERE user_id = ?", (user_id,))
         result = self.cursor.fetchone()[0]
-        
+        return result
+    
+    def get_rules_text(self):
+        self.cursor.execute("SELECT * FROM rules")
+        result = self.cursor.fetchall()
         return result
         
     def get_compliments_female(self):
