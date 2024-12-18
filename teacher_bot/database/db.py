@@ -115,8 +115,14 @@ class Database:
                             """, (current_state, user_id))
     
         self.con.commit() 
-    
-          
+        
+    def get_user_state(self, user_id):
+        self.cursor.execute("""
+            SELECT user_id, current_state
+            FROM users
+            WHERE user_id = ?
+        """, (user_id,))
+        return self.cursor.fetchone()
 
         
     def close(self):
