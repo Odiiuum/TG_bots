@@ -49,3 +49,6 @@ def split_message(text):
     
     messages.append(text)
     return messages
+
+def list_to_text(lst, separator=', '):
+    return separator.join(map(str, lst))

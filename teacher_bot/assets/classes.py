@@ -19,10 +19,8 @@ class User:
 class UserStates(StatesGroup):
     main_menu = State()
     rules_and_compliments_menu = State()
-    rules_menu = State()
-    compliments_menu = State()
-    male_target_menu = State()
-    female_target_menu = State()
+    exam_menu = State()
+    
     # main_menu = State()
     # main_menu = State()
     # main_menu = State()

@@ -29,17 +29,20 @@ class Database:
                         )""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS rules(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        text TEXT
+                        text TEXT,
+                        created_at TEXT
                         )""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS compliments_female(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         subject TEXT,
-                        text TEXT
+                        text TEXT,
+                        created_at TEXT
                         )""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS compliments_male(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         subject TEXT,
-                        text TEXT
+                        text TEXT,
+                        created_at TEXT
                         )""")
         
         user_id = config.admin_uid
@@ -71,8 +74,8 @@ class Database:
         if count == 0:
             created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  
             self.cursor.execute(
-                "INSERT INTO users (user_id, username, firstname, lastname, created_at, confirmed_rules, current_state) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (user.user_id, user.username, user.firstname, user.lastname, created_at, "False", "main_menu")
+                "INSERT INTO users (user_id, username, firstname, lastname, created_at, confirmed_rules) VALUES (?, ?, ?, ?, ?, ?)",
+                (user.user_id, user.username, user.firstname, user.lastname, created_at, "False")
             )
             self.con.commit() 
             
@@ -90,15 +93,29 @@ class Database:
         result = self.cursor.fetchone()[0]
         return result
     
-    def get_rules_text(self):
-        self.cursor.execute("SELECT * FROM rules")
-        result = self.cursor.fetchall()
+    def get_last_rule(self):
+        self.cursor.execute("SELECT * FROM rules ORDER BY id DESC LIMIT 1")
+        result = self.cursor.fetchone()[1]
         return result
         
     def get_compliments_female(self):
         self.cursor.execute("SELECT * FROM compliments_female")
         count = self.cursor.fetchall()
         return count
+    
+    def get_all_users(self):
+        self.cursor.execute("SELECT * FROM users")
+        return self.cursor.fetchall()
+    
+    def update_user_state(self, user_id: int, current_state):
+        self.cursor.execute("""
+                            UPDATE users
+                            SET current_state = ?
+                            WHERE user_id = ?
+                            """, (current_state, user_id))
+    
+        self.con.commit() 
+    
           
 
         
